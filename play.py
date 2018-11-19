@@ -2,9 +2,7 @@ import numpy as np
 import random
 import readchar
 import env
-
-routes = []
-rewards = 0
+import argparse
 
 LEFT = 3 # West -> x decrease 
 DOWN = 0 # North -> y increase
@@ -18,30 +16,46 @@ arrow_keys = {
     '\x1b[D' : LEFT
 }
 
-robot_env = env.Env(file_name = './problem2/problem.txt')
-#print (robot_env.routes)
-#print (robot_env.routes[0][0].coord)
-robot_env.render()
-print ('Start Loc :', robot_env.st_position)
-print ('End loc :', robot_env.ed_position)
-routes.append(robot_env.st_position)
-while True:
-    key = readchar.readkey()
+def main():
+    parser = argparse.ArgumentParser(description='Play with robot enviromnet')
+    parser.add_argument('--file', type=str, default='problem.txt',
+            help='Problem file')
+    args = parser.parse_args()
 
-    if key not in arrow_keys.keys():
-        print("Wrong Key - Game aborted!")
-        break
-    
-    action = arrow_keys[key] 
-    state, reward, done, info = robot_env.step(action) 
-    routes.append( ( int(state%MAX_X), int(state/MAX_X) ) )
-    print ('Steps : ',robot_env.time) 
+    file_name = args.file
+
+    routes = []
+    rewards = 0
+
+    robot_env = env.Env(file_name = file_name)
     robot_env.render()
-    print (' ')
-    rewards += reward
-    
-    if done: 
-        print("Finished with reward: ", rewards)
-        print("Steps :", robot_env.time)
+    print ('Start Loc :', robot_env.st_position)
+    print ('End loc :', robot_env.ed_position)
+    print ('Input Arrow key to move')
+    routes.append(robot_env.st_position)
+    while True:
+        key = readchar.readkey()
+
+        if key not in arrow_keys.keys():
+            print("Wrong Key - Game aborted!")
+            break
+
+        action = arrow_keys[key] 
+        state, reward, done, info = robot_env.step(action) 
+        routes.append( ( int(state%robot_env.m_x), int(state/robot_env.m_x) ) )
+        print ('Steps : ',robot_env.time)
         print("Routes :", routes)
-        break
+        robot_env.render()
+        print (' ')
+        rewards += reward
+
+        if done: 
+            print("Finished with reward: ", rewards)
+            print("Steps :", robot_env.time)
+            print("Routes :", routes)
+            break
+            
+
+            
+if __name__=="__main__":
+    main()

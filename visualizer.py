@@ -85,10 +85,10 @@ class Frame:
         self.buffer = buffer
         self.bounds = buffer_bounds(merge_bounds(problem_configuration.bounds, solution_configuration.bounds), buffer)
         base_grid = []
-        for y in xrange(self.bounds.y_max, self.bounds.y_min - 1, -1):
+        for y in range(self.bounds.y_max, self.bounds.y_min - 1, -1):
             base_grid.append([])
             row = base_grid[-1]
-            for x in xrange(self.bounds.x_min, self.bounds.x_max):
+            for x in range(self.bounds.x_min, self.bounds.x_max):
                 value = ' '
                 if problem_configuration.hasBarrierAt(x, y):
                     value = OBSTACLE_CHARACTER
