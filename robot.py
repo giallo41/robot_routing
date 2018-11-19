@@ -6,9 +6,11 @@ import argparse
 def main():
     
     parser = argparse.ArgumentParser(description='Play with robot enviromnet')
-    parser.add_argument('--file', type=str, default='problem.txt',
+    parser.add_argument('file', type=str, default='problem.txt',
             help='Problem file')
-    args = parser.parse_args()
+    
+    parser.add_argument('solution', type=str, default='solution.txt',
+            help='Solution file')
     
     parser.add_argument('--max_x', type=int, default=15,
         help='Max X size of grids')
@@ -31,6 +33,7 @@ def main():
     args = parser.parse_args()
         
     file_name = args.file
+    file_soultion = args.solution
     max_x = args.max_x
     max_y = args.max_y
     num_episodes = args.episodes
@@ -112,6 +115,7 @@ def main():
     # Check Exist solution 
     if len(done_route)==0 and np.sum(np.multiply(tmp1, tmp2)) == 0 :
         print ("No Solution") 
+        solution = []
     else :
         # To find the shortes path solutions from completed routes
         idx = 0
@@ -125,7 +129,10 @@ def main():
         print ('> Min steps & index :', route_steps, min_step_idx)
         print ('> Solution : ')
         print (done_route[min_step_idx])
-
+        solution = done_route[min_step_idx]
+    
+    with open(file_soultion, 'w') as f:
+        f.write(str(solution))
     
 if __name__=="__main__":
     main()
