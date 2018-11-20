@@ -201,7 +201,7 @@ class Env:
         
         ## Step 1 : out-of play ground 
         if n_x < 0 or n_x >= self.m_x or n_y < 0 or n_y >= self.m_y :
-            reward = -100
+            reward = -1000
             done = True
         else:
             next_node = data[n_y, n_x]
@@ -216,10 +216,10 @@ class Env:
 
             if next_node == END : # Robot arrived at End Position 
                 done = True 
-                reward = 100
+                reward = 1000
             elif BARRIER == next_node or next_node == LASER or next_node == BEAM : # Object 
                 done = True 
-                reward = -100
+                reward = -1000
             elif 50 <= next_node : # Wormholes 
                 for worms in self.wormholes:
                     w1, w2 = worms

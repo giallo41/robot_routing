@@ -1,6 +1,5 @@
 import numpy as np
 import env
-import random
 import argparse
 
 def main():
@@ -84,7 +83,7 @@ def main():
             
             if np.random.rand(1) < e:
                 # Randomly Select the direction ( Exploration )
-                action = random.choice([0,1,2,3])
+                action = np.random.choice([0,1,2,3])
             else:
                 # Exploitation 
                 action = np.argmax(Q[state, :])
@@ -102,8 +101,6 @@ def main():
         rewards_list.append(rewards)
     
     selected_states = list(set(states_list))
-    tmp1 = Q[selected_states,:]==0 
-    tmp2 = Q[selected_states,:]<=-100 
         
     # From Total Routes, Find the Completed Routes
     route_len = 0
@@ -113,7 +110,7 @@ def main():
             done_route.append(item)
     
     # Check Exist solution 
-    if len(done_route)==0 and np.sum(np.multiply(tmp1, tmp2)) == 0 :
+    if len(done_route)==0:
         print ("No Solution") 
         solution = []
     else :
