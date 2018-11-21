@@ -4,6 +4,7 @@ import ast
 from collections import namedtuple
 from copy import deepcopy
 import sys
+import click 
 
 GRID_BUFFER = 3
 ROBOT_CHARACTER = 'R'
@@ -85,10 +86,16 @@ class Frame:
         self.buffer = buffer
         self.bounds = buffer_bounds(merge_bounds(problem_configuration.bounds, solution_configuration.bounds), buffer)
         base_grid = []
+        
+        
+#        for y in xrange(self.bounds.y_max, self.bounds.y_min - 1, -1):
+            
         for y in range(self.bounds.y_max, self.bounds.y_min - 1, -1):
             base_grid.append([])
             row = base_grid[-1]
+            
             for x in range(self.bounds.x_min, self.bounds.x_max):
+#            for x in xrange(self.bounds.x_min, self.bounds.x_max):
                 value = ' '
                 if problem_configuration.hasBarrierAt(x, y):
                     value = OBSTACLE_CHARACTER
@@ -193,6 +200,26 @@ def buffer_bounds(bounds, buffer=1):
 
 def flatten(iterable):
     return [item for sublist in iterable for item in sublist]
+
+
+def raw_input(txt):
+        #while True :
+#    try:
+#        if keyboard.is_pressed('q'):
+#            return ('q')
+#        elif keyboard.is_pressed('n'):
+#            return ('n')
+#        elif keyboard.is_pressed('b'):
+#            return ('b')
+#        else:
+#            print (txt)
+#    except:
+#            pass
+        
+    print (txt)
+    return click.getchar()
+
+                    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

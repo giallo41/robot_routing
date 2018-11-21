@@ -1,13 +1,14 @@
+#!/usr/bin/env python
 import numpy as np
 import random
 import readchar
 import env
 import argparse
 
-LEFT = 3 # West -> x decrease 
+LEFT = 3 # West -> x decrease
 DOWN = 0 # North -> y increase
 RIGHT = 1 # East -> x increase
-UP = 2 # South -> y decrease 
+UP = 2 # South -> y decrease
 
 arrow_keys = {
     '\x1b[A' : UP,
@@ -18,7 +19,7 @@ arrow_keys = {
 
 def main():
     parser = argparse.ArgumentParser(description='Play with robot enviromnet')
-    parser.add_argument('--file', type=str, default='problem.txt',
+    parser.add_argument('file', type=str, default='problem.txt',
             help='Problem file')
     args = parser.parse_args()
 
@@ -40,8 +41,8 @@ def main():
             print("Wrong Key - Game aborted!")
             break
 
-        action = arrow_keys[key] 
-        state, reward, done, info = robot_env.step(action) 
+        action = arrow_keys[key]
+        state, reward, done, info = robot_env.step(action)
         routes.append( ( int(state%robot_env.m_x), int(state/robot_env.m_x) ) )
         print ('Steps : ',robot_env.time)
         print("Routes :", routes)
@@ -49,13 +50,13 @@ def main():
         print (' ')
         rewards += reward
 
-        if done: 
+        if done:
             print("Finished with reward: ", rewards)
             print("Steps :", robot_env.time)
             print("Routes :", routes)
             break
-            
 
-            
+
+
 if __name__=="__main__":
     main()

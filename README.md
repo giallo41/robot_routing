@@ -1,171 +1,102 @@
 # Robot Routing
 
-We're trying to build software to route a robot on a two-dimensional grid layout. The robot can move left, up, right,
-or down on the grid. The robot cannot stay in place at any given time, it always needs to move. Each action takes the robot one second. Assume the grid itself is infinite in size
-and indexed with larger x coordinates toward the right and larger y coordinates toward the top.
+----------------------
 
-## First Version
-We want to return a route that minimizes the number of steps taken by the robot.
+## Finding the solution of routing Problem
 
-#### Example Layout
-In the example below, the O indicates the starting point for the robot, and the D indicates the destination.
+created by Sue Hun Jung giallo.hos@gmail.com
 
-```
- ____________
-|            |
-|  O         |
-|            |
-|        D   |
-|____________|
- 
-```
 
-Here is a route for the robot that minimizes the number of steps taken:
+#### Files
 
 ```
- ____________
-|            |
-|  O......   |
-|        .   |
-|        D   |
-|____________|
- 
+robot.py
+env.py
+play.py
 ```
 
-## Obstacles
-
-Now assume there are certain blocked spaces in the grid that the robot cannot traverse over.
-
-### Example Layout
-In the example below, the O indicates the starting point for the robot, the D indicates the destination, and
-the X's mark barriers.
-
+#### Requirements
+- python3 version
 ```
- ____________
-|            |
-|  O         |
-|        X   |
-|       XD   |
-|____________|
- 
+pip install -r requirements.txt
 ```
 
-Here is a route for the robot that minimizes the number of steps taken while avoiding the barriers:
-
+#### Run
 ```
- ____________
-|            |
-|  O.......  |
-|        X.  |
-|       XD.  |
-|____________|
- 
+./robot.py problem.txt solution.txt
 ```
 
-## Lasers
+#### docker build and run
 
-Assume we have lasers in the maze that point in a particular direction (indicated by a N, E, S, or W). A laser
-shoots in its predetermined direction unless/until the laser's shooting path hits an obstacle.
 
-In the example below we have two lasers, one that points east and one that points south.
 
-```
- _____________
-|         L   |
-|     O   *   |
-|        X*   |
-|  L****XD*   |
-|         *   |
-|_________*___|
- 
-```
+#### Details
 
-Here is a route that avoids the laser beams and obstacles while minimizing the number of steps taken.
+**1)    `robot.py`**
 
-```
- _____________
-|         L   |
-| ....O   *   |
-| .      X*   |
-| .L****XD*   |
-| ........*   |
-|_________*___|
- 
-```
+- Find the shortest path within the number of 'episodes'
+- optional arguments
+  - --max_x : max grid sizes of x (default : 15)
+  - --max_y : max grid sizes of y (default : 15)
+  - --episodes : number of episodes to iterate (default : 10,000)
+  - --e_steps : number of Step to explore and decay (default : 1,000)
+  - --l_rate : learning rate (default : 0.85)
+  - --discount : discount rate of rewards (default : 0.99)<br>
+- make the solution file with list of tuples eg
+`[(1,1), (1,2) (1,3)]`
+- If there is no solution to find make the empty list file eg
+`[]`
 
-## Rotating Lasers
-Now assume the lasers all rotate clockwise every second. Recall that the robot's movements all take exactly one second.
-For example, a laser initially pointing south, will point west on the next timestep, then north, then east, then south again.
+**2)    `env.py`**
 
-## Wormholes
-Now assume there are certain pairs of coordinates in the grid called "wormholes". They appear every 3 seconds, and they are all initially visible (at t=0).
-If the robot walks onto a wormhole space as soon as it appears, it is instantly transported to the partner coordinate.
+- Creating Environment for routing problem
+- `env.reset()` : reset the environment for next trials ( episodes ), return - current state
+- `env.step(action)` : input the available action then return the tuple (next_state, reward, done, info)
 
-# I/O
-Your program should read in a text file with the following structure:
+**3)    `play.py`**
+
+- Playing with the problem
+- Display the problem
+- Input key with keyboards arrows (up, down, left, right)
+- Run : `./play.py problem.txt`
 
 ```
-(x_origin, y_origin) # origin coordinate
-(x_destination, y_destination) # destination coordinate
-[(x_0, y_0), (x_1, y_1), ...] # Barrier coordinates
-[(x_0, y_0, d_0), (x_1, y_1, d_1), ...] # Laser coordinates and initial directions
-[[(x_00, y_00), (x_01, y_01)],[(x_10, y_10), (x_11, y_11)], ... ] # Wormhole coordinate pairs
+example play
+
+[[ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0. 10.  3.  0. 50.  0.  0.  0.  0.]
+ [ 0.  0. 50.  0.  0.  0.  0.  0. 10.  0.  0.  0.  0.  0.  0.]
+ [ 0.  0.  1.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0. 10.  0.  0.  0.  0. 20.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0. 30.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0. 30.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0. 30.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0. 30.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0. 30.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0. 30.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0. 30.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0. 30.  0.  0.  0.  0.  0.]
+ [ 0.  0.  0.  0.  0.  0.  0.  0.  0. 30.  0.  0.  0.  0.  0.]]
+Start Loc : (2, 3)
+End loc : (8, 1)
+Input Arrow key to move
+
+0 - empty node (cell)
+1 - Robot
+2 - Start Position
+3 - End Position
+10 - Block ( Obstacle )
+20 - Laser location
+30 - Laser (Beam)
+50+ - Wormholes pair ( 50 - 50 ), ( 51 - 51 ), (52 - 52) ...
 
 ```
 
-And you should write out your solution to a file with the following structure:
-```
-[(x_0, y_0), (x_1, y_1), ..., (x_N, y_N)]
-```
 
-If no solution is possible, you should output a file with an empty list.
+--------------------
 
-# Build and Run Instructions
 
-Your submission will be tested in a brand new Ubuntu 16.04 installation. Please provide a README with instructions for how to build and run your submission in this environment.
-
-You can test your submission in this environment using a [Docker](https://www.docker.com/community-edition) container:
-
-```
-# Download Ubuntu container image.
-docker pull ubuntu:16.04
-```
-
-We should be able to build and run your solution in the container:
-```
-# Run Ubuntu container image while binding the directory with your solver (e.g. your_submission_dir) to a directory with the same name in the container.
-docker run -it --entrypoint=/bin/bash -v $(pwd)/your_submission_dir:/your_submission_dir ubuntu:16.04
-
-# Now we are running in the Ubuntu container image. Change directory to the bound directory that contains your solver (e.g. your_submission_dir).
-root@8f303cbb134f:/# cd your_submission_dir/
-
-# Perform any build steps necessary to generate an executable. This should be in a README that we can follow.
-# After building we should be able to run the executable in the following way:
-root@8f303cbb134f:/your_submission_dir# ./your_solver problem.txt solution.txt
-
-# The solver should output to the solution.txt file.
-```
-
-# Visualization
-You can use the visualizer.py script to visualize your robot in action:
-```
-python visualizer.py problem.txt solution.txt
-```
-
-As you build up your solution, you may want to test out the various extensions of the problem. You can pass in a flag to
-visualize specific components while testing. For example, if you just want to make sure your solution is respecting barriers:
-```
-python visualizer.py problem.txt solution_barriers_only.txt --visualize barriers
-```
-
-Then later if you get non-rotating lasers as well:
-```
-python visualizer.py problem.txt solution_static_lasers.txt --visualize barriers static_lasers
-```
-
-You can try a sample visualization:
-```
-python visualizer.py sample/problem.txt sample/solution.txt --visualize rotating_lasers barriers
-```
-
-Press 'n' to advance forward in time and 'b' to go back. Press 'q' to quit.
+### FAQ
+ - If `./robot.py` & `./play.py` occurs Permission Denied Error
+  `chmod 755 robot.py`, `chmod 755 play.py`

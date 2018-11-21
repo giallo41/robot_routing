@@ -1,36 +1,37 @@
+#!/usr/bin/env python
 import numpy as np
 import env
 import argparse
 
 def main():
-    
+
     parser = argparse.ArgumentParser(description='Play with robot enviromnet')
     parser.add_argument('file', type=str, default='problem.txt',
             help='Problem file')
-    
+
     parser.add_argument('solution', type=str, default='solution.txt',
             help='Solution file')
-    
+
     parser.add_argument('--max_x', type=int, default=15,
-        help='Max X size of grids')
-    
+        help='Max grid sizes of X')
+
     parser.add_argument('--max_y', type=int, default=15,
-        help='Max Y size of grids')
-    
+        help='Max grid sizes of Y')
+
     parser.add_argument('--episodes', type=int, default=10000,
-        help='Number of episodes to play')
-    
+        help='Number of episodes to iterate')
+
     parser.add_argument('--e_steps', type=int, default=1000,
         help='Number of Step to explore and decay')
-    
+
     parser.add_argument('--l_rate', type=float, default=0.85,
         help='Learning Rate')
-    
+
     parser.add_argument('--discount', type=float, default=0.99,
-        help='Learning Rate')
-    
+        help='Discount rate of rewards')
+
     args = parser.parse_args()
-        
+
     file_name = args.file
     file_soultion = args.solution
     max_x = args.max_x
@@ -39,8 +40,8 @@ def main():
     decay_step = args.e_steps
     l_rate = args.l_rate
     discount = args.discount
-    
- 
+
+
     print ("> Hyper parameter ")
     print ("> File-name :",file_name)
     print ("> Max X grid :", max_x)
@@ -49,24 +50,24 @@ def main():
     print ("> Decay step :", decay_step)
     print ("> Learning Rate :", l_rate)
     print ("> Discount Rate :", discount)
-    
-    
+
+
     # Load Robot walking Environment
     robot_env = env.Env(file_name = file_name, m_x=max_x, m_y=max_y)
     print ("----- Problem Grid ------")
     robot_env.render()
     print ("> St point :", robot_env.st_position, "Ed point :", robot_env.ed_position)
 
-    # Q-space ( Size of Grid , Action ) 
+    # Q-space ( Size of Grid , Action )
     Q = np.zeros([(max_x+1)*(max_y+1), 4])
-    
-    # Store Rewards 
+
+    # Store Rewards
     rewards_list = []
     states_list = []
-    
-    # Set Max steps to add ( to avoid infinite steps ) 
+
+    # Set Max steps to add ( to avoid infinite steps )
     max_steps = max_x*max_y
-    
+
     print ('>>> Now finding possible routes from learning <<<')
     for i in range(num_episodes):
         # Reset environment and get first new observation
@@ -74,18 +75,18 @@ def main():
         rewards = 0
         done = False
 
-        # Random Selection Prob decay during episodes    
-        e = 1. / ((i // decay_step) + 1)  
+        # Random Selection Prob decay during episodes
+        e = 1. / ((i // decay_step) + 1)
 
         # The Q-Table learning algorithm
         steps = 0
         while not done and steps < max_steps:
-            
+
             if np.random.rand(1) < e:
                 # Randomly Select the direction ( Exploration )
                 action = np.random.choice([0,1,2,3])
             else:
-                # Exploitation 
+                # Exploitation
                 action = np.argmax(Q[state, :])
 
             # Get new state and reward from environment
@@ -99,19 +100,16 @@ def main():
             states_list.append(state)
 
         rewards_list.append(rewards)
-    
-    selected_states = list(set(states_list))
-        
+
     # From Total Routes, Find the Completed Routes
-    route_len = 0
     done_route = []
     for item in robot_env.routes:
         if item[-1] == robot_env.ed_position:
             done_route.append(item)
-    
-    # Check Exist solution 
+
+    # Check Exist solution
     if len(done_route)==0:
-        print ("No Solution") 
+        print ("No Solution")
         solution = []
     else :
         # To find the shortes path solutions from completed routes
@@ -127,9 +125,9 @@ def main():
         print ('> Solution : ')
         print (done_route[min_step_idx])
         solution = done_route[min_step_idx]
-    
+
     with open(file_soultion, 'w') as f:
         f.write(str(solution))
-    
+
 if __name__=="__main__":
     main()

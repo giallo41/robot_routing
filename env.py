@@ -18,7 +18,6 @@ MAX_X = 15
 MAX_Y = 15
 
 def open_problem(file_name = 'problem.txt'):
-    file_contents = []
     try: 
         with open(file_name) as f:
             file_contents = f.readlines()
@@ -27,8 +26,6 @@ def open_problem(file_name = 'problem.txt'):
         print ('Error - Open File does not exsit :', file_name)
         return
 
-    barriers, static_lasers, rotating_lasers, wormhole_pairs = [], [], [], []
-    
     st_point = ast.literal_eval(file_contents[0])
     ed_point = ast.literal_eval(file_contents[1])
     barriers = ast.literal_eval(file_contents[2])
@@ -55,7 +52,7 @@ class Env:
         
         self.st_position, self.ed_position, self.barriers, self.lasers, self.wormholes = open_problem(file_name = file_name)
         
-        self.data = np.zeros((m_y, m_x, m_cycle))
+        self.data = np.zeros((self.m_y, self.m_x, m_cycle))
     
         for i in range(m_cycle):
             self.data[:,:,i] = self.return_env(i)
