@@ -13,10 +13,10 @@ created by Sue Hun Jung giallo.hos@gmail.com
 robot.py
 env.py
 play.py
+Dockerfile
 ```
 
 #### Requirements
-- python3 version
 ```
 pip install -r requirements.txt
 ```
@@ -27,7 +27,21 @@ pip install -r requirements.txt
 ```
 
 #### docker build and run
+```
+# Build docker image
+docker build -t robot-img:latest .
 
+# Run docker container
+docker run -it --entrypoint=/bin/bash robot-img:latest
+
+# Run solver file
+./robot.py problem.txt solution.txt
+./robot.py problem1/problem.txt problem1/solution.txt
+./robot.py problem2/problem.txt problem2/solution.txt
+./robot.py problem3/problem.txt problem3/solution.txt
+./robot.py problem4/problem.txt problem4/solution.txt
+
+```
 
 
 #### Details
@@ -87,8 +101,8 @@ Input Arrow key to move
 2 - Start Position
 3 - End Position
 10 - Block ( Obstacle )
-20 - Laser location
-30 - Laser (Beam)
+20 - Laser location ( Obstacle )
+30 - Laser (Beam) ( Obstacle )
 50+ - Wormholes pair ( 50 - 50 ), ( 51 - 51 ), (52 - 52) ...
 
 ```
